@@ -45,7 +45,7 @@ class Event
     /**
      * @var string
      *
-     * @ORM\Column(name="details", type="text")
+     * @ORM\Column(name="details", type="text", nullable=true)
      */
     private $details;
 
@@ -53,7 +53,7 @@ class Event
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
