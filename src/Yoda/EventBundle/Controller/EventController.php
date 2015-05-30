@@ -11,6 +11,8 @@ use Yoda\EventBundle\Form\EventType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+
 /**
  * Event controller.
  *
@@ -40,6 +42,8 @@ class EventController extends Controller
      */
     public function createAction(Request $request)
     {
+        $this->enforceUserSecurity();
+
         $entity = new Event();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
@@ -83,6 +87,8 @@ class EventController extends Controller
      */
     public function newAction()
     {
+        $this->enforceUserSecurity();
+
         $entity = new Event();
         $form   = $this->createCreateForm($entity);
 
@@ -120,6 +126,8 @@ class EventController extends Controller
      */
     public function editAction($id)
     {
+        $this->enforceUserSecurity();
+
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('EventBundle:Event')->find($id);
@@ -162,6 +170,8 @@ class EventController extends Controller
      */
     public function updateAction(Request $request, $id)
     {
+        $this->enforceUserSecurity();
+
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('EventBundle:Event')->find($id);
@@ -192,6 +202,8 @@ class EventController extends Controller
      */
     public function deleteAction(Request $request, $id)
     {
+        $this->enforceUserSecurity();
+
         $form = $this->createDeleteForm($id);
         $form->handleRequest($request);
 
@@ -226,4 +238,12 @@ class EventController extends Controller
             ->getForm()
         ;
     }
+
+    private function enforceUserSecurity() {
+        $securityContext = $this->get('security.context');
+        if (!$securityContext->isGranted('ROLE_USER')) {
+            throw new AccessDeniedException('Need ROLE_USER!');
+        }
+    }
 }
+
